@@ -5,6 +5,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import type { CSSProperties } from 'react'
 import type { SxProps, Theme } from '@mui/material/styles'
 import type { Project } from './project-types'
+import CreateProjectFabButton from './CreateProjectFabButton'
 
 const styles: Record<string, CSSProperties> = {
     container: {
@@ -156,6 +157,7 @@ const ProjectList = ({ projects }: { projects: Project[] }) => {
                     </div>
                 )}
             </div>
+            <CreateProjectFabButton />
         </div>
     )
 }
