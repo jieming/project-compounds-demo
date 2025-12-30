@@ -72,7 +72,7 @@ const CreateProjectContainer = () => {
                 onClick={handleOpenDialog}
                 sx={{
                     position: 'fixed',
-                    bottom: 24,
+                    bottom: 57,
                     left: 24,
                 }}
             >

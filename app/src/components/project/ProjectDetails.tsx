@@ -71,8 +71,8 @@ const paperSx: SxProps<Theme> = {
     ...styles.paper,
     transition: 'all 0.2s ease-in-out',
     '&:hover': {
-        backgroundColor: '#505050',
-        color: 'white',
+        backgroundColor: '#e8f5e9',
+        color: '#333',
         border: '1px solid #b0b0b0',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         '& .action-buttons': {
