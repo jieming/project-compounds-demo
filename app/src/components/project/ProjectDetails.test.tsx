@@ -7,6 +7,14 @@ import ProjectDetails from './ProjectDetails'
 import projectReducer from '../../store/projectSlice'
 import type { Project } from './project-types'
 
+vi.mock('./update-project/UpdateProjectContainer', () => ({
+    default: () => <div>UpdateProjectContainer</div>,
+}))
+
+vi.mock('./delete-project/DeleteProjectContainer', () => ({
+    default: () => <div>DeleteProjectContainer</div>,
+}))
+
 const createTestStore = () => {
     return configureStore({
         reducer: {
@@ -112,5 +120,31 @@ describe('ProjectDetails', () => {
 
         const state = store.getState()
         expect(state.project.currentProject).toBeUndefined()
+    })
+
+    it('should render UpdateProjectContainer when project is provided', () => {
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <ProjectDetails project={mockProject} />
+                </MemoryRouter>
+            </Provider>
+        )
+
+        expect(screen.getByText('UpdateProjectContainer')).toBeInTheDocument()
+    })
+
+    it('should render DeleteProjectContainer when project is provided', () => {
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <ProjectDetails project={mockProject} />
+                </MemoryRouter>
+            </Provider>
+        )
+
+        expect(screen.getByText('DeleteProjectContainer')).toBeInTheDocument()
     })
 })

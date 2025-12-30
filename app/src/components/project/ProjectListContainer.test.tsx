@@ -12,6 +12,10 @@ vi.mock('./create-project/CreateProjectContainer', () => ({
     default: () => <div>CreateProjectContainer</div>,
 }))
 
+vi.mock('./notifications/ProjectNotifications', () => ({
+    default: () => <div>ProjectNotifications</div>,
+}))
+
 const { useQuery } = await import('@apollo/client/react')
 
 describe('ProjectListContainer', () => {
@@ -87,5 +91,21 @@ describe('ProjectListContainer', () => {
         expect(screen.getByText('ID')).toBeInTheDocument()
         expect(screen.getByText('Name')).toBeInTheDocument()
         expect(screen.getByText('Description')).toBeInTheDocument()
+    })
+
+    it('should render ProjectNotifications', () => {
+        vi.mocked(useQuery).mockReturnValue({
+            loading: false,
+            error: undefined,
+            data: mockProjects,
+        } as any)
+
+        render(
+            <MemoryRouter>
+                <ProjectListContainer />
+            </MemoryRouter>
+        )
+
+        expect(screen.getByText('ProjectNotifications')).toBeInTheDocument()
     })
 })

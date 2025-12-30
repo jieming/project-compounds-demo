@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { Provider } from 'react-redux'
+import { configureStore } from '@reduxjs/toolkit'
 import CreateProjectContainer from './CreateProjectContainer'
+import projectReducer from '../../../store/projectSlice'
 import type { Project } from '../project-types'
 
 vi.mock('@apollo/client/react', () => ({
@@ -8,6 +11,14 @@ vi.mock('@apollo/client/react', () => ({
 }))
 
 const { useMutation } = await import('@apollo/client/react')
+
+const createTestStore = () => {
+    return configureStore({
+        reducer: {
+            project: projectReducer,
+        },
+    })
+}
 
 describe('CreateProjectContainer', () => {
     const mockCreateProject = vi.fn()
@@ -19,7 +30,12 @@ describe('CreateProjectContainer', () => {
     })
 
     it('should render Fab button', () => {
-        render(<CreateProjectContainer />)
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <CreateProjectContainer />
+            </Provider>
+        )
 
         const fab = screen.getByRole('button', { name: 'add' })
         expect(fab).toBeInTheDocument()
@@ -27,7 +43,12 @@ describe('CreateProjectContainer', () => {
 
     it('should open dialog when Fab is clicked', async () => {
         const user = userEvent.setup()
-        render(<CreateProjectContainer />)
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <CreateProjectContainer />
+            </Provider>
+        )
 
         const fab = screen.getByRole('button', { name: 'add' })
         await user.click(fab)
@@ -37,7 +58,12 @@ describe('CreateProjectContainer', () => {
 
     it('should close dialog when Cancel is clicked', async () => {
         const user = userEvent.setup()
-        render(<CreateProjectContainer />)
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <CreateProjectContainer />
+            </Provider>
+        )
 
         const fab = screen.getByRole('button', { name: 'add' })
         await user.click(fab)
@@ -54,6 +80,7 @@ describe('CreateProjectContainer', () => {
 
     it('should call mutation and close dialog on successful submit', async () => {
         const user = userEvent.setup()
+        const store = createTestStore()
         const mockProject: Project = {
             id: '1',
             name: 'Test Project',
@@ -64,7 +91,11 @@ describe('CreateProjectContainer', () => {
             data: { createProject: mockProject },
         })
 
-        render(<CreateProjectContainer />)
+        render(
+            <Provider store={store}>
+                <CreateProjectContainer />
+            </Provider>
+        )
 
         const fab = screen.getByRole('button', { name: 'add' })
         await user.click(fab)
@@ -91,17 +122,27 @@ describe('CreateProjectContainer', () => {
                 screen.queryByText('Create New Project')
             ).not.toBeInTheDocument()
         })
+
+        expect(store.getState().project.snackbar.open).toBe(true)
+        expect(store.getState().project.snackbar.message).toBe(
+            'Project "Test Project" has been created'
+        )
     })
 
     it('should handle mutation error without closing dialog', async () => {
         const user = userEvent.setup()
+        const store = createTestStore()
         const consoleErrorSpy = vi
             .spyOn(console, 'error')
             .mockImplementation(() => {})
 
         mockCreateProject.mockRejectedValue(new Error('Network error'))
 
-        render(<CreateProjectContainer />)
+        render(
+            <Provider store={store}>
+                <CreateProjectContainer />
+            </Provider>
+        )
 
         const fab = screen.getByRole('button', { name: 'add' })
         await user.click(fab)
@@ -126,6 +167,8 @@ describe('CreateProjectContainer', () => {
         )
 
         expect(screen.getByText('Create New Project')).toBeInTheDocument()
+
+        expect(store.getState().project.snackbar.open).toBe(false)
 
         consoleErrorSpy.mockRestore()
     })

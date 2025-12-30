@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useMutation } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import CreateProjectDialog from './CreateProjectDialog'
 import type { Project } from '../project-types'
+import { showSnackbar } from '../../../store/projectSlice'
 
 const CREATE_PROJECT = gql`
     mutation CreateProject($name: String!, $description: String!) {
@@ -28,6 +30,7 @@ const GET_PROJECTS = gql`
 
 const CreateProjectContainer = () => {
     const [dialogOpen, setDialogOpen] = useState(false)
+    const dispatch = useDispatch()
     const [createProject] = useMutation<
         { createProject: Project },
         { name: string; description: string }
@@ -49,6 +52,12 @@ const CreateProjectContainer = () => {
             await createProject({
                 variables: { name, description },
             })
+            dispatch(
+                showSnackbar({
+                    message: `Project "${name}" has been created`,
+                    severity: 'success',
+                })
+            )
             handleCloseDialog()
         } catch (err) {
             console.error('Error creating project:', err)

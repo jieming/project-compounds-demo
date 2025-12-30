@@ -1,5 +1,5 @@
 interface Project {
-    id: string
+    id: number | string
     name: string
     description: string
 }

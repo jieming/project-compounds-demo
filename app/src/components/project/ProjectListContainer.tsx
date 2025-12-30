@@ -1,6 +1,7 @@
 import { useQuery } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import ProjectList from './ProjectList'
+import ProjectNotifications from './notifications/ProjectNotifications'
 import type { GetProjectsData } from './project-types'
 import LoadingIndicator from '../common/loading-indicator/LoadingIndicator'
 
@@ -25,7 +26,12 @@ const ProjectListContainer = () => {
         return <div>Error: {error.message}</div>
     }
 
-    return <ProjectList projects={data ? data.projects : []} />
+    return (
+        <>
+            <ProjectList projects={data ? data.projects : []} />
+            <ProjectNotifications />
+        </>
+    )
 }
 
 export default ProjectListContainer
