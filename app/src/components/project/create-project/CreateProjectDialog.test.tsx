@@ -4,7 +4,7 @@ import CreateProjectDialog from './CreateProjectDialog'
 
 describe('CreateProjectDialog', () => {
     const mockOnClose = vi.fn()
-    const mockOnSubmit = vi.fn()
+    const mockOnSubmit = vi.fn().mockResolvedValue(undefined)
 
     beforeEach(() => {
         vi.clearAllMocks()
@@ -118,11 +118,11 @@ describe('CreateProjectDialog', () => {
         await user.type(descriptionField, '  Test Description  ')
         await user.click(createButton)
 
-        expect(mockOnSubmit).toHaveBeenCalledWith(
+        await expect(mockOnSubmit).toHaveBeenCalledWith(
             'Test Project',
             'Test Description'
         )
-        expect(mockOnClose).toHaveBeenCalled()
+        expect(mockOnClose).not.toHaveBeenCalled()
     })
 
     it('should call onClose when Cancel is clicked', async () => {
@@ -162,6 +162,7 @@ describe('CreateProjectDialog', () => {
         await user.type(descriptionField, 'Test Description')
         await user.click(createButton)
 
+        await expect(mockOnSubmit).toHaveBeenCalled()
         expect(nameField).toHaveValue('')
         expect(descriptionField).toHaveValue('')
     })

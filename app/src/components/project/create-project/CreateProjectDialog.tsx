@@ -9,7 +9,7 @@ import Button from '@mui/material/Button'
 interface CreateProjectDialogProps {
     open: boolean
     onClose: () => void
-    onSubmit: (name: string, description: string) => void
+    onSubmit: (name: string, description: string) => Promise<void>
 }
 
 const CreateProjectDialog = ({
@@ -20,12 +20,11 @@ const CreateProjectDialog = ({
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (name.trim() && description.trim()) {
-            onSubmit(name.trim(), description.trim())
+            await onSubmit(name.trim(), description.trim())
             setName('')
             setDescription('')
-            onClose()
         }
     }
 

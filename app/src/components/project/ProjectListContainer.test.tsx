@@ -8,6 +8,10 @@ vi.mock('@apollo/client/react', () => ({
     useQuery: vi.fn(),
 }))
 
+vi.mock('./create-project/CreateProjectContainer', () => ({
+    default: () => <div>CreateProjectContainer</div>,
+}))
+
 const { useQuery } = await import('@apollo/client/react')
 
 describe('ProjectListContainer', () => {

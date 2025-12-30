@@ -4,6 +4,10 @@ import ProjectList from './ProjectList'
 import projectsData from './test-project-data.json'
 import type { Project } from './project-types'
 
+vi.mock('./create-project/CreateProjectContainer', () => ({
+    default: () => <div>CreateProjectContainer</div>,
+}))
+
 const projects: Project[] = projectsData
 
 describe('ProjectList', () => {
@@ -129,5 +133,20 @@ describe('ProjectList', () => {
         expect(screen.getByText('ID')).toBeInTheDocument()
         expect(screen.getByText('Name')).toBeInTheDocument()
         expect(screen.getByText('Description')).toBeInTheDocument()
+    })
+
+    it('should render CreateProjectContainer', () => {
+        render(
+            <MemoryRouter initialEntries={['/projects']}>
+                <Routes>
+                    <Route
+                        path="/projects"
+                        element={<ProjectList projects={projects} />}
+                    />
+                </Routes>
+            </MemoryRouter>
+        )
+
+        expect(screen.getByText('CreateProjectContainer')).toBeInTheDocument()
     })
 })
