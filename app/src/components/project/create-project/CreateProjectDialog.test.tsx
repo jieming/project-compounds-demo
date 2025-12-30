@@ -166,4 +166,130 @@ describe('CreateProjectDialog', () => {
         expect(nameField).toHaveValue('')
         expect(descriptionField).toHaveValue('')
     })
+
+    it('should display character count for name field', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        await user.type(nameField, 'Test')
+
+        expect(screen.getByText('4/20')).toBeInTheDocument()
+    })
+
+    it('should display character count for description field', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        await user.type(descriptionField, 'Test Description')
+
+        expect(screen.getByText('16/200')).toBeInTheDocument()
+    })
+
+    it('should show error when name exceeds 20 characters', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+
+        await user.type(nameField, 'a'.repeat(21))
+        await user.type(descriptionField, 'Test Description')
+
+        expect(
+            screen.getByText('Maximum 20 characters allowed')
+        ).toBeInTheDocument()
+        expect(nameField).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    it('should show error when description exceeds 200 characters', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+
+        await user.type(nameField, 'Test Project')
+        await user.type(descriptionField, 'a'.repeat(201))
+
+        expect(
+            screen.getByText('Maximum 200 characters allowed')
+        ).toBeInTheDocument()
+        expect(descriptionField).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    it('should disable Create button when name exceeds limit', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        const createButton = screen.getByRole('button', { name: 'Create' })
+
+        await user.type(nameField, 'a'.repeat(21))
+        await user.type(descriptionField, 'Test Description')
+
+        expect(createButton).toBeDisabled()
+    })
+
+    it('should disable Create button when description exceeds limit', async () => {
+        const user = userEvent.setup()
+        render(
+            <CreateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        const createButton = screen.getByRole('button', { name: 'Create' })
+
+        await user.type(nameField, 'Test Project')
+        await user.type(descriptionField, 'a'.repeat(201))
+
+        expect(createButton).toBeDisabled()
+    })
 })

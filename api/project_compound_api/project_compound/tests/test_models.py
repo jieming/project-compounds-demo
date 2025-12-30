@@ -41,20 +41,34 @@ class ProjectModelTest(TestCase):
             project.full_clean()
 
     def test_project_name_max_length(self):
-        max_name = "a" * 255
+        max_name = "a" * 20
         project = Project.objects.create(
             name=max_name,
             description=self.valid_description
         )
-        self.assertEqual(len(project.name), 255)
+        self.assertEqual(len(project.name), 20)
 
     def test_project_description_max_length(self):
-        max_description = "a" * 255
+        max_description = "a" * 200
         project = Project.objects.create(
             name=self.valid_name,
             description=max_description
         )
-        self.assertEqual(len(project.description), 255)
+        self.assertEqual(len(project.description), 200)
+
+    def test_project_name_exceeds_max_length(self):
+        """Test that name exceeding max_length raises ValidationError."""
+        long_name = "a" * 21
+        project = Project(name=long_name, description=self.valid_description)
+        with self.assertRaises(ValidationError):
+            project.full_clean()
+
+    def test_project_description_exceeds_max_length(self):
+        """Test that description exceeding max_length raises ValidationError."""
+        long_description = "a" * 201
+        project = Project(name=self.valid_name, description=long_description)
+        with self.assertRaises(ValidationError):
+            project.full_clean()
 
     def test_project_with_special_characters(self):
         """Test that project can handle special characters in name and description."""

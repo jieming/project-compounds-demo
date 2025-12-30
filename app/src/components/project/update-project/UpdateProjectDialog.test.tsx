@@ -256,4 +256,151 @@ describe('UpdateProjectDialog', () => {
 
         expect(mockOnSubmit).not.toHaveBeenCalled()
     })
+
+    it('should display character count for name field', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        await user.clear(nameField)
+        await user.type(nameField, 'Test')
+
+        expect(screen.getByText('4/20')).toBeInTheDocument()
+    })
+
+    it('should display character count for description field', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        await user.clear(descriptionField)
+        await user.type(descriptionField, 'Test Description')
+
+        expect(screen.getByText('16/200')).toBeInTheDocument()
+    })
+
+    it('should show error when name exceeds 20 characters', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        await user.clear(nameField)
+        await user.type(nameField, 'a'.repeat(21))
+
+        expect(
+            screen.getByText('Maximum 20 characters allowed')
+        ).toBeInTheDocument()
+        expect(nameField).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    it('should show error when description exceeds 200 characters', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        await user.clear(descriptionField)
+        await user.type(descriptionField, 'a'.repeat(201))
+
+        expect(
+            screen.getByText('Maximum 200 characters allowed')
+        ).toBeInTheDocument()
+        expect(descriptionField).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    it('should disable Update button when name exceeds limit', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const nameField = screen.getByPlaceholderText('Enter project name')
+        const updateButton = screen.getByRole('button', { name: 'Update' })
+
+        await user.clear(nameField)
+        await user.type(nameField, 'a'.repeat(21))
+
+        expect(updateButton).toBeDisabled()
+    })
+
+    it('should disable Update button when description exceeds limit', async () => {
+        const user = userEvent.setup()
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        const descriptionField = screen.getByPlaceholderText(
+            'Enter project description'
+        )
+        const updateButton = screen.getByRole('button', { name: 'Update' })
+
+        await user.clear(descriptionField)
+        await user.type(descriptionField, 'a'.repeat(201))
+
+        expect(updateButton).toBeDisabled()
+    })
+
+    it('should show character count for prepopulated fields', () => {
+        render(
+            <UpdateProjectDialog
+                open={true}
+                onClose={mockOnClose}
+                onSubmit={mockOnSubmit}
+                initialName={initialName}
+                initialDescription={initialDescription}
+            />
+        )
+
+        expect(screen.getByText(`${initialName.length}/20`)).toBeInTheDocument()
+        expect(
+            screen.getByText(`${initialDescription.length}/200`)
+        ).toBeInTheDocument()
+    })
 })

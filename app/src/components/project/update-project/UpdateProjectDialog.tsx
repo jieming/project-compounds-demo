@@ -6,6 +6,9 @@ import DialogActions from '@mui/material/DialogActions'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 
+const MAX_NAME_LENGTH = 20
+const MAX_DESCRIPTION_LENGTH = 200
+
 interface UpdateProjectDialogProps {
     open: boolean
     onClose: () => void
@@ -31,8 +34,13 @@ const UpdateProjectDialog = ({
         }
     }, [open, initialName, initialDescription])
 
+    const nameError = name.length > MAX_NAME_LENGTH
+    const descriptionError = description.length > MAX_DESCRIPTION_LENGTH
+    const isFormValid =
+        name.trim() && description.trim() && !nameError && !descriptionError
+
     const handleSubmit = async () => {
-        if (name.trim() && description.trim()) {
+        if (isFormValid) {
             await onSubmit(name.trim(), description.trim())
         }
     }
@@ -57,6 +65,12 @@ const UpdateProjectDialog = ({
                     value={name}
                     onChange={e => setName(e.target.value)}
                     required
+                    error={nameError}
+                    helperText={
+                        nameError
+                            ? `Maximum ${MAX_NAME_LENGTH} characters allowed`
+                            : `${name.length}/${MAX_NAME_LENGTH}`
+                    }
                     sx={{ mb: 2 }}
                 />
                 <TextField
@@ -70,6 +84,12 @@ const UpdateProjectDialog = ({
                     value={description}
                     onChange={e => setDescription(e.target.value)}
                     required
+                    error={descriptionError}
+                    helperText={
+                        descriptionError
+                            ? `Maximum ${MAX_DESCRIPTION_LENGTH} characters allowed`
+                            : `${description.length}/${MAX_DESCRIPTION_LENGTH}`
+                    }
                 />
             </DialogContent>
             <DialogActions>
@@ -77,7 +97,7 @@ const UpdateProjectDialog = ({
                 <Button
                     onClick={handleSubmit}
                     variant="contained"
-                    disabled={!name.trim() || !description.trim()}
+                    disabled={!isFormValid}
                 >
                     Update
                 </Button>
