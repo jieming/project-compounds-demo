@@ -1,0 +1,27 @@
+[
+    {
+        "id": "1",
+        "name": "ALZ-2024",
+        "description": "Beta-amyloid inhibitor for Alzheimer's disease - Phase II"
+    },
+    {
+        "id": "2",
+        "name": "ONC-789",
+        "description": "EGFR kinase inhibitor for lung cancer"
+    },
+    {
+        "id": "3",
+        "name": "DIA-456",
+        "description": "GLP-1 agonist for Type 2 diabetes - weekly dosing"
+    },
+    {
+        "id": "4",
+        "name": "IMM-321",
+        "description": "PD-L1 antibody for metastatic melanoma"
+    },
+    {
+        "id": "5",
+        "name": "CAR-2025",
+        "description": "CAR-T cell therapy for B-cell lymphoma - Phase I"
+    }
+]
