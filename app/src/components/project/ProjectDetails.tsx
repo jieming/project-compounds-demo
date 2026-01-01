@@ -19,23 +19,22 @@ const styles: Record<string, CSSProperties> = {
         width: '100%',
         height: '100%',
     },
-    closeLink: {
-        position: 'absolute',
-        top: '1rem',
-        right: '1rem',
-        color: '#1976d2',
-        textDecoration: 'underline',
-        cursor: 'pointer',
-        zIndex: 10,
-    },
     paper: {
         padding: '1rem',
         height: '160px',
-        marginTop: '3rem',
         backgroundColor: 'white',
         border: '1px solid white',
         borderRadius: 0,
         position: 'relative',
+    },
+    closeLink: {
+        position: 'absolute',
+        top: '0.5rem',
+        right: '0.5rem',
+        color: '#1976d2',
+        textDecoration: 'underline',
+        cursor: 'pointer',
+        zIndex: 10,
     },
     titleContainer: {
         display: 'flex',
@@ -108,10 +107,14 @@ const ProjectDetails = ({ project }: { project: Project | undefined }) => {
 
     return project ? (
         <div style={styles.container}>
-            <Link to="/projects" onClick={handleClose} style={styles.closeLink}>
-                Close
-            </Link>
             <Paper sx={paperSx}>
+                <Link
+                    to="/projects"
+                    onClick={handleClose}
+                    style={styles.closeLink}
+                >
+                    Close
+                </Link>
                 <Box sx={styles.titleContainer}>
                     <FolderSpecialIcon sx={folderIconSx} />
                     <Typography variant="h5" component="h1">
