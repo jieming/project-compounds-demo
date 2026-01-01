@@ -1,0 +1,93 @@
+import { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import type { SxProps, Theme } from '@mui/material/styles'
+
+const uploadZoneSx: SxProps<Theme> = {
+    border: '2px dashed #ccc',
+    borderRadius: 0,
+    padding: 4,
+    textAlign: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease-in-out',
+    backgroundColor: '#fafafa',
+    '&:hover': {
+        borderColor: '#1976d2',
+        backgroundColor: '#f5f5f5',
+    },
+}
+
+const CompoundUploadZone = () => {
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        // TODO: Wire up backend call later
+        console.log('Files dropped:', acceptedFiles)
+    }, [])
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: {
+            'text/csv': ['.csv'],
+            'application/vnd.ms-excel': ['.xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                ['.xlsx'],
+        },
+    })
+
+    return (
+        <Paper
+            sx={{
+                height: '100%',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 2,
+                borderRadius: 0,
+                backgroundColor: '#e3f2fd',
+            }}
+        >
+            <Box
+                {...getRootProps()}
+                sx={{
+                    ...uploadZoneSx,
+                    ...(isDragActive && {
+                        borderColor: '#1976d2',
+                        backgroundColor: '#e3f2fd',
+                    }),
+                }}
+            >
+                <input {...getInputProps()} />
+                <CloudUploadIcon
+                    sx={{ fontSize: 48, color: '#1976d2', mb: 2 }}
+                />
+                <Typography variant="h6" component="p" gutterBottom>
+                    No project compounds found
+                </Typography>
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 1 }}
+                >
+                    {isDragActive
+                        ? 'Drop files here to upload...'
+                        : 'Please upload compound files to get started'}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Drag & drop files here or click to browse
+                </Typography>
+                <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 2, display: 'block' }}
+                >
+                    Supported formats: CSV, XLS, XLSX
+                </Typography>
+            </Box>
+        </Paper>
+    )
+}
+
+export default CompoundUploadZone

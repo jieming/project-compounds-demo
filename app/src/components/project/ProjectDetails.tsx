@@ -12,12 +12,15 @@ import NotFoundRoute from '../common/not-found-page/NotFoundRoute'
 import { setCurrentProject } from '../../store/projectSlice'
 import type { Project } from './project-types'
 import DeleteProjectContainer from './delete-project/DeleteProjectContainer'
+import CompoundListContainer from '../compound/CompoundListContainer'
 
 const styles: Record<string, CSSProperties> = {
     container: {
         position: 'relative',
         width: '100%',
         height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
     },
     paper: {
         padding: '1rem',
@@ -133,6 +136,17 @@ const ProjectDetails = ({ project }: { project: Project | undefined }) => {
                     <DeleteProjectContainer />
                 </Box>
             </Paper>
+            <Box
+                sx={{
+                    mt: 2,
+                    flex: 1,
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                }}
+            >
+                <CompoundListContainer />
+            </Box>
         </div>
     ) : (
         <NotFoundRoute />

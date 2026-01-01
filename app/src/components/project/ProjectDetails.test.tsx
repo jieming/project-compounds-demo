@@ -15,6 +15,10 @@ vi.mock('./delete-project/DeleteProjectContainer', () => ({
     default: () => <div>DeleteProjectContainer</div>,
 }))
 
+vi.mock('../compound/CompoundListContainer', () => ({
+    default: () => <div>CompoundListContainer</div>,
+}))
+
 const createTestStore = () => {
     return configureStore({
         reducer: {
@@ -146,5 +150,18 @@ describe('ProjectDetails', () => {
         )
 
         expect(screen.getByText('DeleteProjectContainer')).toBeInTheDocument()
+    })
+
+    it('should render CompoundListContainer when project is provided', () => {
+        const store = createTestStore()
+        render(
+            <Provider store={store}>
+                <MemoryRouter>
+                    <ProjectDetails project={mockProject} />
+                </MemoryRouter>
+            </Provider>
+        )
+
+        expect(screen.getByText('CompoundListContainer')).toBeInTheDocument()
     })
 })
