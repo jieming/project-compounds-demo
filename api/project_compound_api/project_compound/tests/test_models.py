@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from project_compound.models import Project
+from project_compound.models import Project, Compound
 
 
 class ProjectModelTest(TestCase):
@@ -79,4 +79,110 @@ class ProjectModelTest(TestCase):
         
         self.assertEqual(project.name, "Project-123 (Test)")
         self.assertEqual(project.description, "Description with special chars: @#$%^&*()")
+
+
+class CompoundModelTest(TestCase):
+    def setUp(self):
+        self.project = Project.objects.create(
+            name="Test Project",
+            description="Test Description"
+        )
+        self.valid_smiles = "CCO"
+
+    def test_create_compound_with_all_fields(self):
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=self.valid_smiles,
+            mw=180.16,
+            logD=2.5,
+            logP=1.8
+        )
+        
+        self.assertEqual(compound.smiles, self.valid_smiles)
+        self.assertEqual(compound.mw, 180.16)
+        self.assertEqual(compound.logD, 2.5)
+        self.assertEqual(compound.logP, 1.8)
+
+    def test_compound_smiles_is_required(self):
+        compound = Compound(project=self.project, smiles="")
+        with self.assertRaises(ValidationError):
+            compound.full_clean()
+
+    def test_compound_smiles_cannot_be_null(self):
+        compound = Compound(project=self.project, smiles=None)
+        with self.assertRaises(ValidationError):
+            compound.full_clean()
+
+    def test_compound_project_is_required(self):
+        compound = Compound(project=None, smiles=self.valid_smiles)
+        with self.assertRaises((IntegrityError, ValueError)):
+            compound.save()
+
+    def test_compound_mw_can_be_null(self):
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=self.valid_smiles,
+            mw=None
+        )
+        self.assertIsNone(compound.mw)
+
+    def test_compound_logD_can_be_null(self):
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=self.valid_smiles,
+            logD=None
+        )
+        self.assertIsNone(compound.logD)
+
+    def test_compound_logP_can_be_null(self):
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=self.valid_smiles,
+            logP=None
+        )
+        self.assertIsNone(compound.logP)
+
+    def test_compound_smiles_max_length(self):
+        max_smiles = "C" * 150
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=max_smiles
+        )
+        self.assertEqual(len(compound.smiles), 150)
+
+    def test_compound_smiles_exceeds_max_length(self):
+        """Test that smiles exceeding max_length raises ValidationError."""
+        long_smiles = "C" * 151
+        compound = Compound(project=self.project, smiles=long_smiles)
+        with self.assertRaises(ValidationError):
+            compound.full_clean()
+
+    def test_compound_cascade_delete(self):
+        compound = Compound.objects.create(
+            project=self.project,
+            smiles=self.valid_smiles
+        )
+        compound_id = compound.id
+        
+        # Delete the project
+        self.project.delete()
+        
+        # Compound should be deleted as well
+        self.assertFalse(Compound.objects.filter(id=compound_id).exists())
+
+    def test_multiple_compounds_per_project(self):
+        """Test that a project can have multiple compounds."""
+        compound1 = Compound.objects.create(
+            project=self.project,
+            smiles="CCO"
+        )
+        compound2 = Compound.objects.create(
+            project=self.project,
+            smiles="CCN"
+        )
+        
+        compounds = self.project.compounds.all()
+        self.assertEqual(compounds.count(), 2)
+        self.assertIn(compound1, compounds)
+        self.assertIn(compound2, compounds)
 

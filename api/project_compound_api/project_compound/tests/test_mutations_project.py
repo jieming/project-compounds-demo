@@ -1,6 +1,6 @@
 from django.test import TestCase
 from project_compound.models import Project
-from project_compound.schema import schema
+from project_compound.schema_project import project_schema as schema
 
 
 class MutationTest(TestCase):

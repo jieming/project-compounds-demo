@@ -1,7 +1,6 @@
 from django.test import TestCase
-from django.core.exceptions import ObjectDoesNotExist
 from project_compound.models import Project
-from project_compound.schema import schema
+from project_compound.schema_project import project_schema as schema
 
 
 class QueryTest(TestCase):
@@ -63,3 +62,4 @@ class QueryTest(TestCase):
         self.assertIsNone(result.data)
         self.assertIsNotNone(result.errors)
         self.assertEqual(result.errors[0].message, "Project matching query does not exist.")
+

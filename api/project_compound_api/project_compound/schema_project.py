@@ -5,7 +5,7 @@ from .types import ProjectType
 
 
 @strawberry.type
-class Query:
+class ProjectQuery:
     @strawberry.field
     def projects(self, id: strawberry.ID = None) -> List[ProjectType]:
         if id:
@@ -13,15 +13,16 @@ class Query:
         
         return Project.objects.all()
 
+
 @strawberry.type
-class Mutation:
+class ProjectMutation:
     @strawberry.field
-    def create_project(self, name:str, description:str) -> ProjectType:
+    def create_project(self, name: str, description: str) -> ProjectType:
         project = Project.objects.create(name=name, description=description)
         return project
     
     @strawberry.field
-    def update_project(self, id:strawberry.ID, name:str, description:str) -> ProjectType:
+    def update_project(self, id: strawberry.ID, name: str, description: str) -> ProjectType:
         project = Project.objects.get(id=id)
         project.name = name
         project.description = description
@@ -29,7 +30,7 @@ class Mutation:
         return project
 
     @strawberry.field
-    def delete_project(self, id:strawberry.ID) -> ProjectType:
+    def delete_project(self, id: strawberry.ID) -> ProjectType:
         project = Project.objects.get(id=id)
         deleted_project = ProjectType(
             id=project.id,
@@ -38,6 +39,7 @@ class Mutation:
         )
         project.delete()
         return deleted_project
-    
-    
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+
+
+project_schema = strawberry.Schema(query=ProjectQuery, mutation=ProjectMutation)
+
