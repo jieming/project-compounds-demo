@@ -2,8 +2,10 @@ import { useMutation } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 import { useState, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import CompoundUploadZone from './CompoundUploadZone'
 import { parseCSV } from './file-parser-utils'
+import { showSnackbar } from '../../../store/projectSlice'
 
 const BULK_CREATE_COMPOUNDS = gql`
     mutation BulkCreateCompounds(
@@ -35,6 +37,7 @@ const GET_COMPOUNDS = gql`
 const CompoundUploadContainer = () => {
     const { projectId } = useParams<{ projectId: string }>()
     const [uploading, setUploading] = useState(false)
+    const dispatch = useDispatch()
 
     const [bulkCreateCompounds] = useMutation(BULK_CREATE_COMPOUNDS, {
         refetchQueries: [
@@ -54,7 +57,6 @@ const CompoundUploadContainer = () => {
             setUploading(true)
 
             try {
-                // Read file as text
                 const text = await file.text()
                 const compounds = parseCSV(text)
 
@@ -70,13 +72,23 @@ const CompoundUploadContainer = () => {
                         compounds,
                     },
                 })
+
+                const compoundCount = compounds.length
+                dispatch(
+                    showSnackbar({
+                        message: `Successfully uploaded ${compoundCount} compound${
+                            compoundCount !== 1 ? 's' : ''
+                        }`,
+                        severity: 'success',
+                    })
+                )
             } catch (err) {
                 console.error('Error uploading compounds:', err)
             } finally {
                 setUploading(false)
             }
         },
-        [projectId, bulkCreateCompounds]
+        [projectId, bulkCreateCompounds, dispatch]
     )
 
     return <CompoundUploadZone onDrop={onDrop} uploading={uploading} />
