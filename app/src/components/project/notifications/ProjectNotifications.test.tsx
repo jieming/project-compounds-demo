@@ -4,12 +4,14 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import ProjectNotifications from './ProjectNotifications'
 import projectReducer from '../../../store/projectSlice'
-import { showSnackbar } from '../../../store/projectSlice'
+import snackbarReducer from '../../../store/snackbarSlice'
+import { showSnackbar } from '../../../store/snackbarSlice'
 
 const createTestStore = () => {
     return configureStore({
         reducer: {
             project: projectReducer,
+            snackbar: snackbarReducer,
         },
     })
 }
@@ -111,7 +113,7 @@ describe('ProjectNotifications', () => {
 
         // Wait for the snackbar to close (MUI has transition animations)
         await waitFor(() => {
-            expect(store.getState().project.snackbar.open).toBe(false)
+            expect(store.getState().snackbar.open).toBe(false)
         })
     })
 

@@ -5,6 +5,7 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import CompoundUploadContainer from './CompoundUploadContainer'
 import projectReducer from '../../../store/projectSlice'
+import snackbarReducer from '../../../store/snackbarSlice'
 
 vi.mock('@apollo/client/react', () => ({
     useMutation: vi.fn(),
@@ -60,6 +61,7 @@ const createTestStore = () => {
     return configureStore({
         reducer: {
             project: projectReducer,
+            snackbar: snackbarReducer,
         },
     })
 }
@@ -218,11 +220,11 @@ describe('CompoundUploadContainer', () => {
 
         await waitFor(() => {
             const state = store.getState()
-            expect(state.project.snackbar.open).toBe(true)
-            expect(state.project.snackbar.message).toBe(
+            expect(state.snackbar.open).toBe(true)
+            expect(state.snackbar.message).toBe(
                 'Successfully uploaded 1 compound'
             )
-            expect(state.project.snackbar.severity).toBe('success')
+            expect(state.snackbar.severity).toBe('success')
         })
     })
 
@@ -277,11 +279,11 @@ describe('CompoundUploadContainer', () => {
 
         await waitFor(() => {
             const state = store.getState()
-            expect(state.project.snackbar.open).toBe(true)
-            expect(state.project.snackbar.message).toBe(
+            expect(state.snackbar.open).toBe(true)
+            expect(state.snackbar.message).toBe(
                 'Successfully uploaded 3 compounds'
             )
-            expect(state.project.snackbar.severity).toBe('success')
+            expect(state.snackbar.severity).toBe('success')
         })
     })
 
@@ -399,7 +401,7 @@ describe('CompoundUploadContainer', () => {
 
         // Verify snackbar is not shown for empty compounds
         const state = store.getState()
-        expect(state.project.snackbar.open).toBe(false)
+        expect(state.snackbar.open).toBe(false)
 
         await waitFor(() => {
             expect(screen.getByTestId('uploading-state')).toHaveTextContent(
@@ -443,7 +445,7 @@ describe('CompoundUploadContainer', () => {
 
         // Verify snackbar is not shown on error
         const state = store.getState()
-        expect(state.project.snackbar.open).toBe(false)
+        expect(state.snackbar.open).toBe(false)
 
         await waitFor(() => {
             expect(screen.getByTestId('uploading-state')).toHaveTextContent(

@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import CreateProjectContainer from './CreateProjectContainer'
 import projectReducer from '../../../store/projectSlice'
+import snackbarReducer from '../../../store/snackbarSlice'
 import type { Project } from '../project-types'
 
 vi.mock('@apollo/client/react', () => ({
@@ -16,6 +17,7 @@ const createTestStore = () => {
     return configureStore({
         reducer: {
             project: projectReducer,
+            snackbar: snackbarReducer,
         },
     })
 }
@@ -123,8 +125,8 @@ describe('CreateProjectContainer', () => {
             ).not.toBeInTheDocument()
         })
 
-        expect(store.getState().project.snackbar.open).toBe(true)
-        expect(store.getState().project.snackbar.message).toBe(
+        expect(store.getState().snackbar.open).toBe(true)
+        expect(store.getState().snackbar.message).toBe(
             'Project "Test Project" has been created'
         )
     })
@@ -168,7 +170,7 @@ describe('CreateProjectContainer', () => {
 
         expect(screen.getByText('Create New Project')).toBeInTheDocument()
 
-        expect(store.getState().project.snackbar.open).toBe(false)
+        expect(store.getState().snackbar.open).toBe(false)
 
         consoleErrorSpy.mockRestore()
     })

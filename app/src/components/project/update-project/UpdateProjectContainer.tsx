@@ -5,7 +5,7 @@ import { gql } from '@apollo/client'
 import IconButton from '@mui/material/IconButton'
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined'
 import type { RootState } from '../../../store/store'
-import { showSnackbar } from '../../../store/projectSlice'
+import { showSnackbar } from '../../../store/snackbarSlice'
 import UpdateProjectDialog from './UpdateProjectDialog'
 import type { Project } from '../project-types'
 

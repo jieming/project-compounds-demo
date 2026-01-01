@@ -2,12 +2,12 @@ import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import { useSelector, useDispatch } from 'react-redux'
 import type { RootState } from '../../../store/store'
-import { hideSnackbar } from '../../../store/projectSlice'
+import { hideSnackbar } from '../../../store/snackbarSlice'
 
 const ProjectNotifications = () => {
     const dispatch = useDispatch()
 
-    const snackbar = useSelector((state: RootState) => state.project.snackbar)
+    const snackbar = useSelector((state: RootState) => state.snackbar)
 
     const handleCloseSnackbar = () => {
         dispatch(hideSnackbar())

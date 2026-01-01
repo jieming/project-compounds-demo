@@ -5,7 +5,7 @@ import { useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import CompoundUploadZone from './CompoundUploadZone'
 import { parseCSV } from './file-parser-utils'
-import { showSnackbar } from '../../../store/projectSlice'
+import { showSnackbar } from '../../../store/snackbarSlice'
 
 const BULK_CREATE_COMPOUNDS = gql`
     mutation BulkCreateCompounds(

@@ -6,7 +6,7 @@ import Fab from '@mui/material/Fab'
 import AddIcon from '@mui/icons-material/Add'
 import CreateProjectDialog from './CreateProjectDialog'
 import type { Project } from '../project-types'
-import { showSnackbar } from '../../../store/projectSlice'
+import { showSnackbar } from '../../../store/snackbarSlice'
 
 const CREATE_PROJECT = gql`
     mutation CreateProject($name: String!, $description: String!) {
