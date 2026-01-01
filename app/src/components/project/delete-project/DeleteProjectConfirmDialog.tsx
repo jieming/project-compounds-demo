@@ -30,8 +30,8 @@ const DeleteProjectConfirmDialog = ({
             <DialogContent>
                 <DialogContentText>
                     Are you sure you want to delete the project{' '}
-                    <strong>{currentProject?.name}</strong>? This action cannot
-                    be undone.
+                    <strong>{currentProject?.name}</strong>? All project
+                    compounds will be removed. This action cannot be undone.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
