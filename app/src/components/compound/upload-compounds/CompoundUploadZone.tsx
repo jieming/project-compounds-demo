@@ -1,9 +1,10 @@
-import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import CircularProgress from '@mui/material/CircularProgress'
 import type { SxProps, Theme } from '@mui/material/styles'
 
 const uploadZoneSx: SxProps<Theme> = {
@@ -20,20 +21,20 @@ const uploadZoneSx: SxProps<Theme> = {
     },
 }
 
-const CompoundUploadZone = () => {
-    const onDrop = useCallback((acceptedFiles: File[]) => {
-        // TODO: Wire up backend call later
-        console.log('Files dropped:', acceptedFiles)
-    }, [])
-
+const CompoundUploadZone = ({
+    onDrop,
+    uploading,
+}: {
+    onDrop: (acceptedFiles: File[]) => void
+    uploading: boolean
+}) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
             'text/csv': ['.csv'],
             'application/vnd.ms-excel': ['.xls'],
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                ['.xlsx'],
         },
+        disabled: uploading,
     })
 
     return (
@@ -60,30 +61,40 @@ const CompoundUploadZone = () => {
                 }}
             >
                 <input {...getInputProps()} />
-                <CloudUploadIcon
-                    sx={{ fontSize: 48, color: '#1976d2', mb: 2 }}
-                />
+                {uploading ? (
+                    <CircularProgress sx={{ mb: 2 }} />
+                ) : (
+                    <CloudUploadIcon
+                        sx={{ fontSize: 48, color: '#1976d2', mb: 2 }}
+                    />
+                )}
                 <Typography variant="h6" component="p" gutterBottom>
-                    No project compounds found
+                    {uploading
+                        ? 'Uploading compounds...'
+                        : 'No project compounds found'}
                 </Typography>
                 <Typography
                     variant="body2"
                     color="text.secondary"
                     sx={{ mb: 1 }}
                 >
-                    {isDragActive
+                    {uploading
+                        ? 'Please wait while we process your file'
+                        : isDragActive
                         ? 'Drop files here to upload...'
                         : 'Please upload compound files to get started'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Drag & drop files here or click to browse
-                </Typography>
+                {!uploading && (
+                    <Typography variant="body2" color="text.secondary">
+                        Drag & drop files here or click to browse
+                    </Typography>
+                )}
                 <Typography
                     variant="caption"
                     color="text.secondary"
                     sx={{ mt: 2, display: 'block' }}
                 >
-                    Supported formats: CSV, XLS, XLSX
+                    Supported formats: CSV
                 </Typography>
             </Box>
         </Paper>

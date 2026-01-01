@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client/react'
 import { gql } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 import CompoundList from './CompoundList'
-import CompoundUploadZone from './CompoundUploadZone'
+import CompoundUploadZoneContainer from './upload-compounds/CompoundUploadContainer'
 import type { GetCompoundsData } from './compound-types'
 import LoadingIndicator from '../common/loading-indicator/LoadingIndicator'
 
@@ -36,7 +36,7 @@ const CompoundListContainer = () => {
     const compounds = data ? data.compounds : []
 
     if (compounds.length === 0) {
-        return <CompoundUploadZone />
+        return <CompoundUploadZoneContainer />
     }
 
     return <CompoundList compounds={compounds} />

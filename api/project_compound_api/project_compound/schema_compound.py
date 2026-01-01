@@ -4,6 +4,14 @@ from .models import Project, Compound
 from .types import CompoundType
 
 
+@strawberry.input
+class CompoundInput:
+    smiles: str
+    mw: float | None = None
+    logD: float | None = None
+    logP: float | None = None
+
+
 @strawberry.type
 class CompoundQuery:
     @strawberry.field
@@ -51,6 +59,27 @@ class CompoundMutation:
         )
         compound.delete()
         return deleted_compound
+    
+    @strawberry.field
+    def bulk_create_compounds(
+        self,
+        project_id: strawberry.ID,
+        compounds: List[CompoundInput]
+    ) -> List[CompoundType]:
+        project = Project.objects.get(id=project_id)
+        created_compounds = []
+        
+        for compound_input in compounds:
+            compound = Compound.objects.create(
+                project=project,
+                smiles=compound_input.smiles,
+                mw=compound_input.mw,
+                logD=compound_input.logD,
+                logP=compound_input.logP
+            )
+            created_compounds.append(compound)
+        
+        return created_compounds
 
 
 compound_schema = strawberry.Schema(query=CompoundQuery, mutation=CompoundMutation)

@@ -1,7 +1,12 @@
 import { ApolloClient, InMemoryCache, ApolloLink } from '@apollo/client'
 import { HttpLink } from '@apollo/client/link/http'
 
-const compoundOperations = ['GetCompounds', 'CreateCompound', 'DeleteCompound']
+const compoundOperations = [
+    'GetCompounds',
+    'CreateCompound',
+    'DeleteCompound',
+    'BulkCreateCompounds',
+]
 
 const getBaseUrl = () => {
     const protocol = window.location.protocol
