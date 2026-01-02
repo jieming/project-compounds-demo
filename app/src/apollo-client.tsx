@@ -11,7 +11,7 @@ const compoundOperations = [
 const getBaseUrl = () => {
     const protocol = window.location.protocol
     const hostname = window.location.hostname
-    const port = import.meta.env.VITE_API_PORT || '8000'
+    const port = import.meta.env.BACKEND_API_PORT || '8000'
     return `${protocol}//${hostname}:${port}`
 }
 
